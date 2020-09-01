@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Q
 from django.core.validators import MaxValueValidator, MinValueValidator
 
 class Goal(models.Model):
@@ -27,6 +28,13 @@ class DifficultyLevel(models.Model):
 
     def __str__(self):
         return str(self.level)
+
+    class Meta:
+        constraints = [
+            models.CheckConstraint(
+                check=Q(level__gte=1, level__lte=3), name='level_between_1_and_3'
+            )
+        ]
 
 class Subgoal(models.Model):
     goal = models.ForeignKey(Goal, on_delete=models.CASCADE)
